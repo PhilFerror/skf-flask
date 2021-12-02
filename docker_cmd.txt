@@ -1,0 +1,18 @@
+docker run -d \
+    --name=firefox \
+    -p 5800:5800 \
+    -v /docker/appdata/firefox:/config:rw \
+    -e "FF_PREF_HTTP_PROXY=network.proxy.http=\"localhost:7090\""
+    --shm-size 2g \
+    jlesage/firefox
+
+
+docker run -v /home/user/zap:/zap/wrk/:rw \
+-e ZAP_WEBSWING_OPTS="-host 0.0.0.0 -port 7090" \
+-u zap \
+-p 7070:8080  \
+-p 7090:7090  \
+--name zap \
+--network skf-flask_default \ 
+-i owasp/zap2docker-stable \
+zap-webswing.sh 
