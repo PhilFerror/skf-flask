@@ -30,6 +30,7 @@ services:
     image: nginx
     volumes:
       - ./Docker/compose/site.conf:/etc/nginx/nginx.conf
+      - ./Docker/compose/proxy_config.pac:/usr/share/nginx/html/proxy_config.pac
     ports:
       - "80:80"
 
@@ -95,16 +96,24 @@ services:
     container_name: skf-firefox
     depends_on:
       - zap
-    restart: always
+    restart: on-failure:3
     image: jlesage/firefox
     shm_size: '2gb'
+    tmpfs:
+      - /config
     volumes:
-      - /docker/appdata/firefox:/config
-      - zapwork:/zap:ro
+      #- ${HOME}/appdata/docker/firefox:/config
+      - zapwork:/config/zap:ro
     ports:
       - '5800:5800'
     environment:
-      - FF_PREF_HTTP_PROXY=network.proxy.http=\"skf-zap:7090\"
-  
+      # The name of the environment variable must start with FF_PREF_, followed by a string of your choice. For example, FF_PREF_MY_PREF is a valid name.
+      - FF_PREF_HTTP_PROXYURL=network.proxy.autoconfig_url=\"http://skf-nginx_container/proxy_config.pac\"
+      - FF_PREF_HTTP_PROXYTYPE=network.proxy.type=2
+    #command:
+    # apk add nss-tools
+    # /config/profile/cert9.db
+    #  certutil -A -n "${certificateName}" -t "TCu,Cuw,Tuw" -i ${certificateFile} -d ${certDir}
+
 volumes:
   zapwork:
