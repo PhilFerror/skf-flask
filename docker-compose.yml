@@ -1,6 +1,6 @@
 # Run docker-compose up
 # Live long and prosper
-version: '2'
+version: '3'
 services:
   rabbitmq:
     container_name: skf-rabbitmq_container
@@ -72,19 +72,22 @@ services:
       #- SKF_DOJO_API_KEY=
   
   zap:
+    build:
+      context: .
+      dockerfile: Docker/zap/Dockerfile      
     container_name: skf-zap
     depends_on:
       - skf-api
       - skf-angular
     restart: always
-    image: owasp/zap2docker-stable
+    image: pei/zap2docker-stable
     volumes:
       - zapwork:/zap/wrk:rw
     ports:
       - '7070:8080'
       - '7090:7090'
     environment:
-      - ZAP_WEBSWING_OPTS=-host 0.0.0.0 -port 7090
+      - ZAP_WEBSWING_OPTS=-host 0.0.0.0 -port 7090 -certpubdump /zap/wrk/owasp_zap_root_ca.cer -certfulldump  /zap/wrk/owasp_zap_root_ca.key
     user: zap
     command: 'zap-webswing.sh'
 
@@ -101,8 +104,7 @@ services:
     ports:
       - '5800:5800'
     environment:
-      - FF_PREF_HTTP_PROXY=network.proxy.http=\"localhost:7090\"
+      - FF_PREF_HTTP_PROXY=network.proxy.http=\"skf-zap:7090\"
   
 volumes:
   zapwork:
-    name: zap-work
