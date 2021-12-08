@@ -116,3 +116,6 @@ services:
 
 volumes:
   zapwork:
+      driver_opts:
+        type: tmpfs
+        device: tmpfs
