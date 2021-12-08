@@ -4,7 +4,8 @@ set -u # Treat unset variables as an error.
 
 echo "[$(basename "$(pwd)")] starting "
 
-if [ -f "/config/profile/cert9.db" -a  -d /config/zap ]; then
+#if [[ ( "$g" -eq 1 && "$c" = "123" ) || ( "$g" -eq 2 && "$c" = "456" ) ]]
+if [ -f "/config/profile/cert9.db" ] && [ -f "/config/zap/owasp_zap_root_ca.key" ] &&  [ -f "/config/zap/owasp_zap_root_ca.cer" ]; then
     # Notice: Trust flag u is set automatically if the private key is present.
     # "TCu,Cu,Tuw" => "TC,Cw,Tw"
     certutil -A -n "OWASP Zed Attack Proxy Root CA" -t "TC,Cw,Tw" -i /config/zap/owasp_zap_root_ca.cer -d /config/profile/
@@ -15,6 +16,6 @@ if [ -f "/config/profile/cert9.db" -a  -d /config/zap ]; then
         echo "[$(basename "$(pwd)")] error executing certutil exit code is:  $?"
     fi
 else
-    echo "[$(basename "$(pwd)")] error /config/profile/cert9.db not found"
+    echo "[$(basename "$(pwd)")] error /config/profile/cert9.db OR /config/zap/owasp_zap_root_ca.key OR /config/zap/owasp_zap_root_ca.cer not found"
 fi
 
