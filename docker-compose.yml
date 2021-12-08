@@ -74,14 +74,14 @@ services:
   
   zap:
     build:
-      context: .
-      dockerfile: Docker/zap/Dockerfile      
+      context: ./Docker/zap/ 
+      dockerfile: Dockerfile      
     container_name: skf-zap
     depends_on:
       - skf-api
       - skf-angular
     restart: always
-    image: pei/zap2docker-stable
+    image: pei/skf-zap2docker-stable
     volumes:
       - zapwork:/zap/wrk:rw
     ports:
@@ -93,11 +93,14 @@ services:
     command: 'zap-webswing.sh'
 
   firefox:
+    build:
+      context: ./Docker/firefox/
+      dockerfile: Dockerfile   
     container_name: skf-firefox
     depends_on:
       - zap
-    restart: on-failure:3
-    image: jlesage/firefox
+    restart: on-failure:3    
+    image: pei/skf-firefox
     shm_size: '2gb'
     tmpfs:
       - /config
@@ -109,11 +112,7 @@ services:
     environment:
       # The name of the environment variable must start with FF_PREF_, followed by a string of your choice. For example, FF_PREF_MY_PREF is a valid name.
       - FF_PREF_HTTP_PROXYURL=network.proxy.autoconfig_url=\"http://skf-nginx_container/proxy_config.pac\"
-      - FF_PREF_HTTP_PROXYTYPE=network.proxy.type=2
-    #command:
-    # apk add nss-tools
-    # /config/profile/cert9.db
-    #  certutil -A -n "${certificateName}" -t "TCu,Cuw,Tuw" -i ${certificateFile} -d ${certDir}
+      - FF_PREF_HTTP_PROXYTYPE=network.proxy.type=2 
 
 volumes:
   zapwork:

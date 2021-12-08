@@ -1,0 +1,20 @@
+#!/usr/bin/with-contenv sh
+set -e # Exit immediately if a command exits with a non-zero status.
+set -u # Treat unset variables as an error.
+
+echo "[$(basename "$(pwd)")] starting "
+
+if [ -f "/config/profile/cert9.db" -a  -d /config/zap ]; then
+    # Notice: Trust flag u is set automatically if the private key is present.
+    # "TCu,Cu,Tuw" => "TC,Cw,Tw"
+    certutil -A -n "OWASP Zed Attack Proxy Root CA" -t "TC,Cw,Tw" -i /config/zap/owasp_zap_root_ca.cer -d /config/profile/
+    if [ $? -eq 0 ]; then
+        echo "[$(basename "$(pwd)")] certificates imported,  disable service"
+        s6-svc -d /var/run/s6/services/$(basename "$(pwd)") # hopefully shutdown
+    else
+        echo "[$(basename "$(pwd)")] error executing certutil exit code is:  $?"
+    fi
+else
+    echo "[$(basename "$(pwd)")] error /config/profile/cert9.db not found"
+fi
+
