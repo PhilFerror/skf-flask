@@ -48,6 +48,9 @@ services:
 
   skf-api:
     container_name: skf-api_container
+    build:
+      context: ./
+      dockerfile: ./Docker/alpine-cloud/api/Dockerfile    
     depends_on:
       - "rabbitmq"
       - "nginx"
@@ -55,13 +58,13 @@ services:
     restart: always
     volumes:
       - ~/.kube/config:/home/user_api/.kube/config
-    image: "blabla1337/skf-api:4.0.4"
+    image: "pei/skf-api:4.0.4"
     environment:
-      - SKF_FLASK_DEBUG=False
+      - SKF_FLASK_DEBUG=True
       - SKF_API_URL=http://localhost/api
       - SKF_TESTING=False
       - SKF_DB_URL=mysql+pymysql://root:admin-skf-secret@mysql/skf?charset=utf8mb4
-      - SKF_JWT_SECRET=please_change_this_value_to_be_random
+      - SKF_JWT_SECRET=nfQBUYyFTFzWk3qp63evfi8Av73kJsthL36hh8dk6wtnph8nRsrYqJi8q2FGGyD2
       - SKF_LABS_DOMAIN=http://localhost
       - SKF_LABS_DEPLOY_MODE=port
       - RABBIT_MQ_CONN_STRING=rabbitmq
@@ -81,7 +84,7 @@ services:
       - skf-api
       - skf-angular
     restart: always
-    image: pei/skf-zap2docker-stable
+    image: "pei/skf-zap2docker-stable:2.11.0"
     volumes:
       - zapwork:/zap/wrk:rw
     ports:
@@ -100,7 +103,7 @@ services:
     depends_on:
       - zap
     restart: on-failure:3    
-    image: pei/skf-firefox
+    image: "pei/skf-firefox:v1.17.1"
     shm_size: '2gb'
     tmpfs:
       - /config

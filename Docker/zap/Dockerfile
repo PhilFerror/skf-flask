@@ -9,7 +9,7 @@
 ############
 
 # base image
-FROM owasp/zap2docker-stable
+FROM owasp/zap2docker-stable:2.11.0
 WORKDIR /zap
 
 #Copy doesn't respect USER directives so we need to chown and to do that we need to be root

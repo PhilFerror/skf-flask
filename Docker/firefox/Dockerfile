@@ -9,7 +9,7 @@
 ############
 
 # base image
-FROM jlesage/firefox
+FROM jlesage/firefox:v1.17.1
 RUN apk add nss-tools
 RUN mkdir /etc/services.d/certimport
 COPY ./certimport/app.dep /etc/services.d/certimport/app.dep
