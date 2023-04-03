@@ -119,10 +119,10 @@ services:
       context: ./Docker/docker-cyberchef/
       dockerfile: Dockerfile   
       args: 
-        - VERSION=v9.32.3
+        - VERSION=v10.4.0
    container_name: skf-cyberchef
    restart: on-failure:3
-   image: "pei/skf-cyberchef:v9.32.3"
+   image: "pei/skf-cyberchef:v10.4.0"
    ports:
    - '8000:8000'
 
