@@ -44,6 +44,15 @@ If you are done don't forget to kill it again with:
 ```
 docker-compose down
 ```
+# SKF
+http://localhost
+# ZAP
+http://localhost:7070/zap/
+# Firefox
+http://localhost:5800/
+# cyberchef
+http://localhost:8000/
+
 
 5. Location of SKF images
 We also have a list of old OWASP-SKF Docker images available:

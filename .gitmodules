@@ -1,0 +1,3 @@
+[submodule "Docker/docker-cyberchef"]
+	path = Docker/docker-cyberchef
+	url = https://github.com/mpepping/docker-cyberchef.git
