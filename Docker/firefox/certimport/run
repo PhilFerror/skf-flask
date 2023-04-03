@@ -16,6 +16,7 @@ if [ -f "/config/profile/cert9.db" ] && [ -f "/config/zap/owasp_zap_root_ca.key"
         echo "[$(basename "$(pwd)")] error executing certutil exit code is:  $?"
     fi
 else
-    echo "[$(basename "$(pwd)")] waiting for: /config/profile/cert9.db OR /config/zap/owasp_zap_root_ca.key OR /config/zap/owasp_zap_root_ca.cer"
+    echo "[$(basename "$(pwd)")] waiting another 30s for: /config/profile/cert9.db OR /config/zap/owasp_zap_root_ca.key OR /config/zap/owasp_zap_root_ca.cer"
+    sleep 30
 fi
 
