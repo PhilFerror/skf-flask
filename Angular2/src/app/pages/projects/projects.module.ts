@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ArchwizardModule } from 'angular-archwizard';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { HighlightModule } from 'ngx-highlightjs';
+import { ClipboardModule } from 'ngx-clipboard';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ProjectRoutingModule } from './project-routing.module';
 
@@ -16,7 +16,9 @@ import { ProjectRoutingModule } from './project-routing.module';
     ReactiveFormsModule,
     ArchwizardModule,
     ProjectRoutingModule,
-    HighlightModule
+    ClipboardModule,
+    NgbModule
+    //HighlightModule
   ]
 })
 export class ProjectsModule { }

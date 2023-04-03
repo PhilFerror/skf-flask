@@ -3,7 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppSettings } from '../../../global';
-
+import { ClipboardService } from 'ngx-clipboard';
+import { NgxSpinnerService  } from 'ngx-spinner';
 import { SprintService } from '../../../core/services/sprint.service';
 import { CodeExamplesService } from '../../../core/services/code-examples.service';
 
@@ -23,11 +24,11 @@ export class SummaryComponent implements OnInit
   private sub: any = [];
   public id: number;
   public sprintData: any = [];
-  public codeData: any = [];
   public complianceForm: FormGroup;
   public routerId;
   public delete: string;
   public priv: string;
+  public clipped: boolean = false;
 
   // Form Submission
   public submit: boolean;
@@ -43,7 +44,9 @@ export class SummaryComponent implements OnInit
     private route: ActivatedRoute,
     private _sprintService: SprintService,
     private _codeExampleService: CodeExamplesService,
-    private router: Router
+    private router: Router,
+    private clipboardApi: ClipboardService,
+    private spinner: NgxSpinnerService
   ) { }
 
 
@@ -104,19 +107,17 @@ export class SummaryComponent implements OnInit
 
   getSprintItems()
   {
+    this.spinner.show();
     this.sub = this.route.params.subscribe(params =>
     {
       this.id = +params['id'];
     });
-    this._sprintService.getSprintChecklistResults(this.id).subscribe(sprint => this.sprintData = sprint)
-  }
+    this._sprintService.getSprintChecklistResults(this.id).subscribe(sprint => { 
+      this.spinner.hide(); 
+      this.sprintData = sprint
+    } )
 
-
-  getCodeExamples(checklist_kb_id: number)
-  {
-    this._codeExampleService.getChecklistKbCodeItems(checklist_kb_id).subscribe(code => this.codeData = code)
   }
-  
 
   newCompliance(item: number){
     this.submit = true;
@@ -167,6 +168,16 @@ export class SummaryComponent implements OnInit
     if (this.delete == 'DELETE') {
       this._sprintService.deleteControlsFromSprint(control_id).subscribe(x => this.getSprintItems());
     }
+  }
+
+  copyText(id, content) {
+    let clippy = id + " " + content
+    this.clipboardApi.copyFromContent(clippy)
+    this.clipped = true;
+    setTimeout(() =>
+    {
+      this.clipped = false;
+    }, 3000);
   }
 
   onSubmit()

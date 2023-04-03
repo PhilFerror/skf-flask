@@ -1,23 +1,22 @@
 #############
 ### build ###
 #############
-# TO-DO Fix Angular versions and npm modules and so we an use the builder image step again :(
 
 # base image
-#FROM node:15-alpine AS builder
+FROM node:14-alpine AS builder
 
 #LABEL maintainer="glenn.ten.cate@owasp.org"
 
-#WORKDIR /home/user_angular/Angular2
+WORKDIR /home/user_angular/Angular2
 
-#COPY ./Angular2 ./
-#COPY ./Docker/alpine-cloud/angular/site.conf.template  /home/user_angular/site.conf.template
+COPY ./Angular2 ./
+COPY ./Docker/alpine-cloud/angular/site.conf.template  /home/user_angular/site.conf.template
 
-#RUN node -v
+RUN node -v
 
 # Optimize vendor.bundle.js
-#RUN npm --loglevel=error install &&\
-#    npm run build --prod --loglevel=error
+RUN npm --loglevel=error install
+RUN npm run build --loglevel=error 
 
 ############
 ### run ###
@@ -30,15 +29,15 @@ FROM nginx:1.14.1-alpine as run
 ## Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY ./Angular2/dist/Angular2 ./usr/share/nginx/html
+#COPY ./Angular2/dist/Angular2 ./usr/share/nginx/html
 COPY ./Docker/alpine-cloud/angular/site.conf.template  /home/user_angular/site.conf.template
 COPY ./Docker/alpine-cloud/angular/entrypoint.sh  /home/user_angular/entrypoint.sh
 
 ## From builder stage copy over the artifacts in dist folder to default nginx public folder
-#COPY --from=builder /home/user_angular/Angular2/dist/Angular2 /usr/share/nginx/html
+COPY --from=builder /home/user_angular/Angular2/dist/Angular2 /usr/share/nginx/html
 
 ## Copy our default nginx config
-#COPY --from=builder /home/user_angular/site.conf.template /home/user_angular/site.conf.template
+COPY --from=builder /home/user_angular/site.conf.template /home/user_angular/site.conf.template
 
 
 # not the most secure solution but the entrypoint needs to be able to copy the correct config into confd.d,
@@ -64,6 +63,7 @@ USER nginx
 CMD ["/home/user_angular/entrypoint.sh","/home/user_angular/site.conf.template"]
 
 #First go to the main skf-flask folder and from there build the image
+#uilding the Angular app can be done npm build --minimal --loglevel=error or npm run build --extended --loglevel=error
 #docker build -f Docker/alpine-cloud/angular/Dockerfile . -t skf-angular --no-cache
 #docker run -ti -p 127.0.0.1:8788:8788 skf-angular
 #docker buildx build -f Docker/alpine-cloud/angular/Dockerfile  --platform linux/amd64,linux/arm/v7 -t blabla1337/skf-angular:dev --push .

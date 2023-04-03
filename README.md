@@ -16,17 +16,23 @@
 
 The OWASP Security Knowledge Framework is an open source web application that explains secure coding principles in multiple programming languages. The goal of OWASP-SKF is to help you learn and integrate security by design in your software development and build applications that are secure by design. OWASP-SKF does this through manageable software development projects with checklists (using OWASP-ASVS/OWASP-MASVS  or custom security checklists) and labs to practice security verification (using SKF-Labs, OWASP Juice-shop, and best practice code examples from SKF and the OWASP-Cheatsheets).
 
+Currently we are making plans to make SKF fully SaaS so that you don't need to perform your own installation to
+be able to benifit fully from whatever the SKF has to offer you. We made this step because we realised that with all the
+additional features we are providing SKF becomes harder and harder to deploy and maintain yourself.
+
+Ofcourse, if you want to have your own instance running feel free to follow all the installation steps provided in either the 
+[Kubernetes installation how to](installations/Kubernetes) or the [Docker-compose local how to](installations/docker).
+
+
 ## Table of Contents
 * [Introduction](#introduction)
 * [Installing](#installing)
-* [Updating Database](#updating-db)
-* [Updating Chatbot](#updating-dataset)
 * [Usage](#usage)
 * [CI-Pipeline](#ci-pipeline)
 * [Development / Contributing](CONTRIBUTING.md)
 * [Scrum Board](#scrum-board)
 * [License](#license)
-* [Contributors](#contributors)
+* [Contributors](#contributors-main)
 
 ## <a name="introduction"></a>Introduction
 
@@ -40,39 +46,31 @@ Because of this we decided to develop a framework in order to create a guide-sys
 
 ## <a name="installing"></a>Installing
 
+### **Types of installation**
+
 ### [Kubernetes installation how to](installations/Kubernetes)
-### [Bare metal / on premise installation how to](installations/local)
+
+In order to make the SKF more ready to be used inside enterprise environments, we knew we had to do something with our
+existing authentication/authorization model. We decided to change the SKF architecture and get rid of authentication/
+authorization decisions within the API itself and delegate this to the API gateway and IDP. When choosing the full deployment of the SKF the user management can be done directly in Keycloak. You can also decide if you want to use Keycloak’s federation or social login features.
+
+
+![full](https://user-images.githubusercontent.com/8506705/193818570-ff027ef1-acd1-461b-a9d1-53faac979a32.png)
+
+
+---
+
 ### [Docker-compose local how to](installations/docker)
-### [SKF K8s Raspberry pi cluster how to](installations/pi-cluster)
-### [SKF Chatbot installation how to](https://github.com/blabla1337/skf-bot)
 
-## <a name="updating-db"></a>Updating Database
+This deployment method is for testing and local development only. When deploying the SKF with the Docker
+compose you are provisioned with the following environment:
 
-There is a method available to update the content of the SKF application.
+![minimal](https://user-images.githubusercontent.com/8506705/193818616-d2ca5d02-aff5-48e7-bcb5-f4100742d0d4.png)
 
-When you have modified or created new Knowledge base items, code examples or checklist you need to run the following commands in the SKF root directory:
-```
-export FLASK_APP=skf/app.py
-export PYTHONPATH=.:$PYTHONPATH
-flask updatedb
-```
+This setup makes the SKF directly accessible for everybody who wants to use it. Keep in mind that this also allows everybody to make changes to the SKF knowledgebase, code examples, questionnaires, etc. because after all, there are no authentication/authorization mechanisms in place remember?
 
-## <a name="updating-dataset"></a>Updating chatbot
+---
 
-There is a method available to update the dataset of the SKF chatbot application.
-
-When you have modified or created new Knowledge base items, code examples or checklist you need to run the following commands in the SKF root directory:
-```
-export FLASK_APP=skf/app.py
-export PYTHONPATH=.:$PYTHONPATH
-flask initdataset
-```
-
-## <a name="usage"></a>Usage
-
-For more detailed information such as setting up an admin account and user guides please see the extended documentation that can be found below:
-
-[Readme: extended documentation](https://skf.readme.io/)  
 
 ## <a name="CI-Pipeline"></a>CI-Pipeline
 
@@ -121,7 +119,7 @@ Creates a nice badge for your website SSL/TLS security settings based on the Qua
 
 
 ## <a name="license"></a>License
-    Copyright (C) 2021  Glenn ten Cate, Riccardo ten Cate
+    Copyright (C) 2022  Glenn ten Cate, Riccardo ten Cate
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -141,20 +139,35 @@ Creates a nice badge for your website SSL/TLS security settings based on the Qua
 * [Owasp](http://owasp.com/index.php/Main_Page)  
 Licensed under the [creative commons](http://creativecommons.org/licenses/by-nd/3.0/nl/) license
 
-## <a name="contributors"></a>Contributors
+## <a name="contributors-main"></a>Main Contributors
 - [Glenn ten Cate](https://twitter.com/FooBar_testing_)
 - [Riccardo ten Cate](https://twitter.com/RiieCco)
+- [Erik de Kuijper](https://twitter.com/edkpr)
+- Martin Knobloch
+- Rudy Truyens
+- Thiago Luiz Dimbarre
+- Volkan Dindar
+- Bruno Cortes Rodrigues
+- Sezer Toprak
+- Jacob O'Toole (on behalf of MeVitae)
+- Heeraj Nair
+- [Priyanka Jain](https://www.linkedin.com/in/priyanka997/)
+- Akash M
+- [Ionut Marius Breaz](https://www.linkedin.com/in/ionut-breaz-52b847a2/)
+- [Alexandru Stanciu](https://www.linkedin.com/in/alexandrustanciu)
+
+
+## <a name="contributors"></a>Contributors
+- [Imanuel Febie](https://github.com/tuffgniuz)
 - Lucas Luitjes
 - [Mattijs van Ommeren](https://twitter.com/alcyonsecurity)
 - [Alexander Kaasjager](https://twitter.com/akaasjager)
 - John Haley
 - Daniel Paulus
-- [Erik de Kuijper](https://twitter.com/edkpr)
 - Roderick Schaefer
 - [Jim Manico](https://twitter.com/manicode)
 - Martijn Gijsberti Hodenpijl
 - Bithin Alangot
-- Martin Knobloch
 - Adam Fisher
 - Tom Wirschell
 - Joerg Stephan
@@ -167,7 +180,6 @@ Licensed under the [creative commons](http://creativecommons.org/licenses/by-nd/
 - Laurence Keijmel
 - Rick Mitchell (Kingthorin)
 - Xenofon Vassilakopoulos
-- Heeraj Nair
 - Alpha Kitonga
 - [Wojciech Reguła](https://www.linkedin.com/in/wojciech-regula/) 
 - Amadeusz Starzykiewicz
@@ -176,20 +188,15 @@ Licensed under the [creative commons](http://creativecommons.org/licenses/by-nd/
 - Rafał Fronczyk
 - Chang Xu (Neo)
 - Martin Marsicano
-- [Priyanka Jain](https://www.linkedin.com/in/priyanka997/)
 - Chandrasekar Karthickrajan
 - Leena Bhegade
 - Balazs Hambalko
-- Rudy Truyens
 - Giulio Comi
 - Aniket Surwade
-- Thiago Luiz Dimbarre
 - Harshant Sharma
 - Semen Rozhkov
 - Mehtab Zafar 
 - Daniel Spilsbury
-- Akash M
 - Tess Sluijter
 - Xavier Rene-Corail
-- Jacob O'Toole (on behalf of MeVitae)
 - Luca Famà

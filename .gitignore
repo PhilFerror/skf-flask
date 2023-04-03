@@ -1,5 +1,6 @@
 *.pyc
 .DS_Store
+Docker/alpine-cloud/k8s/configmaps.yaml
 **/.__pycache__
 **/.DS_Store
 **/*.swp
@@ -11,6 +12,7 @@ export.csv
 **/reports
 **/dist
 **/owasp_skf.egg-info/
+*.code-workspace
 .coverage
 .vscode
 **/skf/cover
@@ -22,3 +24,5 @@ bin
 bin64
 include
 venv
+Docker/alpine-cloud/k8s/configmaps.yaml
+Docker/alpine-cloud/k8s/SSO/configmaps.yaml

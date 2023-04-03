@@ -1,4 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { UserService } from '../../core/services/user.service';
+
 
 @Component({
   selector: 'app-horizontal',
@@ -10,12 +12,17 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
  * Horizontal-layout component
  */
 export class HorizontalComponent implements OnInit, AfterViewInit {
+  userId: string;
 
-  constructor() { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
+
+    this.userService.getJwtUserId();
+
     document.body.setAttribute('data-layout', 'horizontal');
     document.body.setAttribute('data-topbar', 'dark');
+
   }
 
   ngAfterViewInit() {

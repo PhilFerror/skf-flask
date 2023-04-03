@@ -34,9 +34,6 @@ export class LabViewComponent implements OnInit
   public lab_code_example: any = [];
 
   public kubernetes_enabled = environment.KUBERNETES_ENABLED;
-  public loggedinUser: string;
-  public loggedin = false;
-
   public codeDataTest: any = [];
 
   // tslint:disable-next-line: variable-name
@@ -48,7 +45,9 @@ export class LabViewComponent implements OnInit
 
   ngOnInit(): void
   {
-    this.showStatus();
+    if(localStorage.getItem("labs-deployed")){
+      this.showStatus();
+    }
     this.breadCrumbItems = [{ label: 'Labs' }, { label: 'View', active: true }];
     this._fetchData();
     this.labLists = ['SKF-Labs', 'Juice-Shop', 'Other Labs'];
@@ -100,12 +99,15 @@ export class LabViewComponent implements OnInit
   getLabAddress(image_tag, image_id)
   {
     this.spinner.show()
-    this._labService.deployLab(image_id).subscribe(requestData =>
+    this._labService.deployLab(
+      image_id, 
+      sessionStorage.getItem("user_id")
+      ).subscribe(requestData =>
     {
       this.spinner.hide();
       this.lab = requestData;
-      var lab_split = this.lab.split("\\");
-      this.lab = lab_split[3].substring(1);
+      var lab_split = this.lab['message'].split("'");
+      this.lab = lab_split[1]
       Swal.queue([
         {
           title: 'Lab deployment URL',
@@ -134,7 +136,10 @@ export class LabViewComponent implements OnInit
   stopLabFromRunning(image_tag, image_id)
   {
     this.spinner.show()
-    this._labService.deleteLab(image_id).subscribe(requestData =>
+    this._labService.deleteLab(
+      image_id,
+      sessionStorage.getItem("user_id")
+      ).subscribe(requestData =>
     {
       this.deployments = requestData
       this.spinner.hide();
@@ -158,15 +163,6 @@ export class LabViewComponent implements OnInit
     })
   }
 
-
-  loggedIn()
-  {
-    this.loggedinUser = sessionStorage.getItem('Authorization');
-    this.loggedin = true;
-    return this.loggedinUser;
-  }
-
-
   setCategorySelectorLang(categoryCodeLang: String = 'php')
   {
     localStorage.setItem('codeReviewLanguage', categoryCodeLang.toString());
@@ -178,20 +174,6 @@ export class LabViewComponent implements OnInit
     this._labService
     .solveCodeReviewChallenge(code_id, solution_id)
     .subscribe(data => console.log(data));
-  }
-
-  answer_fail()
-  {
-    this.lab_code_status = false;
-    this.lab_code_answer = "It was a CMD injection combined with a Secret Unicorn \r Sometimes developers while creating code invoke a secret unicorn \r this is the reason they exist in old fory stories but people are not able to spot them.";
-    this.lab_code_example = '    <?php\r    $cmd = $_GET["cmd"];\r    $escaped_command = escapeshellcmd($_GET["cmd"]);\r    $result = system($escaped_command);\r    print $result;\r    ?>';
-  }
-  
-  answer_success()
-  {
-    this.lab_code_status = true;
-    this.lab_code_answer = "It was a CMD injection combined with a Secret Unicorn \r Sometimes developers while creating code invoke a secret unicorn \r this is the reason they exist in old fory stories but people are not able to spot them.";
-    this.lab_code_example = '    <?php\r    $cmd = $_GET["cmd"];\r    $escaped_command = escapeshellcmd($_GET["cmd"]);\r    $result = system($escaped_command);\r    print $result;\r    ?>'; 
   }
 
 }

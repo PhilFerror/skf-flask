@@ -11,29 +11,26 @@ services:
     ports:
         - "5672:5672"
         - "15672:15672"
-
   mysql:
     container_name: skf-mysql_container
     image: blabla1337/mysql
     restart: always
     environment:
-      MYSQL_DATABASE: 'skf'
-      MYSQL_ROOT_PASSWORD: 'admin-skf-secret'
-      MYSQL_DEFAULT_PASS: 'admin-skf-secret'
-      MYSQL_DEFAULT_USER: 'root'
+      MYSQL_DATABASE: "skf"
+      MYSQL_ROOT_PASSWORD: "admin-skf-secret"
+      MYSQL_DEFAULT_PASS: "admin-skf-secret"
+      MYSQL_DEFAULT_USER: "root"
     ports:
-      - '3306:3306'
-
+      - "3306:3306"
   nginx:
     container_name: skf-nginx_container
     restart: always
     image: nginx
     volumes:
-      - ./Docker/compose/site.conf:/etc/nginx/nginx.conf
+      - ./Docker/compose/minimal-site.conf:/etc/nginx/nginx.conf
       - ./Docker/compose/proxy_config.pac:/usr/share/nginx/html/proxy_config.pac
     ports:
       - "80:80"
-
   skf-angular:
     container_name: skf-angular_container
     depends_on:
@@ -41,11 +38,11 @@ services:
       - "nginx"
       - "mysql"
     restart: always
-    image: "blabla1337/skf-angular:4.0.2"
+    image: "blabla1337/skf-angular:4.1.0"
+
     environment:
       - FRONTEND_URI=http://localhost
-      - SKIP_LOGIN=skiploginprovider
-
+      - AUTH_METHOD=skiploginprovider
   skf-api:
     container_name: skf-api_container
     build:
@@ -58,10 +55,10 @@ services:
     restart: always
     volumes:
       - ~/.kube/config:/home/user_api/.kube/config
-    image: "pei/skf-api:4.0.4"
+    image: "pei/skf-api:4.1.0"
     environment:
-      - SKF_FLASK_DEBUG=True
-      - SKF_API_URL=http://localhost/api
+      - SKF_FLASK_DEBUG=False
+      - SKF_API_URL=skf-api://api
       - SKF_TESTING=False
       - SKF_DB_URL=mysql+pymysql://root:admin-skf-secret@mysql/skf?charset=utf8mb4
       - SKF_JWT_SECRET=nfQBUYyFTFzWk3qp63evfi8Av73kJsthL36hh8dk6wtnph8nRsrYqJi8q2FGGyD2
