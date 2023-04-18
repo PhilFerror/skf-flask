@@ -8,11 +8,12 @@
 ### run ###
 ############
 
-# escape=`
 # base image
-FROM jlesage/firefox:v1.17.1
+FROM jlesage/firefox:v23.03.1
 RUN apk add nss-tools
+
+# create services
 RUN mkdir /etc/services.d/certimport
-COPY ./certimport/app.dep /etc/services.d/certimport/app.dep
-COPY ./certimport/run /etc/services.d/certimport/run
- 
+COPY --chmod=744 ./80-certimport.sh /etc/cont-init.d/80-certimport.sh
+
+
