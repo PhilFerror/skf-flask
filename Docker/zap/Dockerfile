@@ -1,15 +1,7 @@
-############
-### build ###
-############
-
-# docker build -t pei/zap2docker-stable .
-
-############
-### run ###
-############
+ARG VERSION
 
 # base image
-FROM owasp/zap2docker-stable:2.12.0
+FROM owasp/zap2docker-stable:"$VERSION"
 WORKDIR /zap
 
 #Copy doesn't respect USER directives so we need to chown and to do that we need to be root

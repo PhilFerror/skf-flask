@@ -8,15 +8,15 @@ FROM python:3.8.13-slim-buster
 LABEL maintainer="glenn.ten.cate@owasp.org"
 
 RUN apt-get update &&\
-    apt-get install -y --no-install-recommends \
-    libblas-dev \
-    liblapack-dev \
-    libatlas-base-dev \
-    gfortran \
-    procps \
-    vim \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+  apt-get install -y --no-install-recommends \
+  libblas-dev \
+  liblapack-dev \
+  libatlas-base-dev \
+  gfortran \
+  procps \
+  vim \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Create user_api user and group.
 RUN groupadd --gid 1000 user_api && useradd --uid 1000 --gid user_api -m user_api && mkdir -p /home/user_api
@@ -28,19 +28,19 @@ USER user_api
 RUN mkdir .kube .config .config/pip
 RUN echo "[global]\nextra-index-url=https://www.piwheels.org/simple" >> .config/pip/pip.conf
 RUN pip3 install --upgrade pip --no-cache-dir &&\
-    pip3 install --user nltk --no-cache-dir &&\
-    pip3 install --user cython --no-cache-dir 
+  pip3 install --user nltk --no-cache-dir &&\
+  pip3 install --user cython --no-cache-dir 
 
 # Enrich ntlk data sets
 RUN python3 -m nltk.downloader punkt stopwords 
 
 # Magic below for PI docker image speeding up
 RUN if [ `ps auwxf | grep qemu-arm | wc -l` = 4 ]; \
-then \
+  then \
   pip3 install --user numpy==1.19.0rc2 scipy==1.5.0rc2 --no-cache-dir; \
-else \
+  else \
   pip3 install --user numpy scipy --no-cache-dir; \
-fi 
+  fi 
 
 # Intall packages from requirements.txt
 COPY --chown=user_api:user_api ./requirements.txt /home/user_api/requirements.txt

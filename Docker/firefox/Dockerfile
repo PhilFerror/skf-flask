@@ -1,15 +1,7 @@
-############
-### build ###
-############
-
-# docker build -t pei/firefox .
-
-############
-### run ###
-############
+ARG VERSION
 
 # base image
-FROM jlesage/firefox:v23.03.1
+FROM jlesage/firefox:"$VERSION"
 RUN apk add nss-tools
 
 # create services
