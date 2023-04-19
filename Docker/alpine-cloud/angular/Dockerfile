@@ -1,9 +1,11 @@
 #############
 ### build ###
 #############
+ARG NODE_VERSION
+ARG NGINX_VERSION
 
 # base image
-FROM node:14-alpine AS builder
+FROM node:"$NODE_VERSION" AS builder
 
 #LABEL maintainer="glenn.ten.cate@owasp.org"
 
@@ -23,7 +25,7 @@ RUN npm run build --loglevel=error
 ############
 
 # base image
-FROM nginx:1.14.1-alpine as run
+FROM nginx:"$NGINX_VERSION" as run
 
 
 ## Remove default nginx website

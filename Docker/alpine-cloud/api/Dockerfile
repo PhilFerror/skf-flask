@@ -1,9 +1,10 @@
 ############
 ### run ###
 ############
+ARG SKF_API_PYTHON_VERSION
 
 # base image
-FROM python:3.8.13-slim-buster
+FROM python:"$SKF_API_PYTHON_VERSION"
 
 LABEL maintainer="glenn.ten.cate@owasp.org"
 

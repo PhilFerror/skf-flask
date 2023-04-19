@@ -13,19 +13,21 @@ services:
       - "15672:15672"
   mysql:
     container_name: skf-mysql_container
-    image: blabla1337/mysql
+    image: mariadb:${MARIADB_VERSION}
     restart: always
     environment:
       MYSQL_DATABASE: "skf"
       MYSQL_ROOT_PASSWORD: "admin-skf-secret"
       MYSQL_DEFAULT_PASS: "admin-skf-secret"
       MYSQL_DEFAULT_USER: "root"
+    volumes:
+      - /var/lib/docker/volumes/bf1ddb79db29f4aa5afbacd89c1b0d6e9e817da280acf446a4de342771fe994f/_data:/var/lib/mysql
     ports:
       - "3306:3306"
   nginx:
     container_name: skf-nginx_container
     restart: always
-    image: nginx
+    image: nginx:${NGINX_VERSION}
     volumes:
       - ./Docker/compose/site.conf:/etc/nginx/nginx.conf
       - ./Docker/compose/proxy_config.pac:/usr/share/nginx/html/proxy_config.pac
@@ -33,12 +35,18 @@ services:
       - "80:80"
   skf-angular:
     container_name: skf-angular_container
+    build:
+      context: ./
+      dockerfile: ./Docker/alpine-cloud/angular/Dockerfile
+      args:
+        - NGINX_VERSION=${NGINX_VERSION}
+        - NODE_VERSION=${NODE_VERSION}
     depends_on:
       - "rabbitmq"
       - "nginx"
       - "mysql"
     restart: always
-    image: "blabla1337/skf-angular:${SKF_VERSION}"
+    image: "pei/skf-angular:${SKF_VERSION}"
     environment:
       - FRONTEND_URI=http://localhost
       - AUTH_METHOD=skiploginprovider
@@ -49,6 +57,7 @@ services:
       dockerfile: ./Docker/alpine-cloud/api/Dockerfile
       args:
         - VERSION=${SKF_VERSION}
+        - SKF_API_PYTHON_VERSION=${SKF_API_PYTHON_VERSION}
     depends_on:
       - "rabbitmq"
       - "nginx"
