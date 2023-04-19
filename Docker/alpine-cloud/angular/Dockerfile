@@ -50,6 +50,7 @@ RUN chown -R nginx:nginx /home/user_angular/ &&\
     chown -R nginx:nginx /usr/share/nginx/html &&\
     chown -R nginx:nginx /etc/nginx/conf.d/ &&\
     chown -R nginx:nginx /var/log/nginx &&\
+    chown -R nginx:nginx /var/cache/nginx &&\
     # move the .pid file somewhere we can run
     sed -i -e "s_/var/run/nginx.pid_/etc/nginx/conf.d/nginx.pid_g" /etc/nginx/nginx.conf &&\
     chmod +x /home/user_angular/entrypoint.sh
