@@ -3,11 +3,14 @@
 #############
 ARG NODE_VERSION
 ARG NGINX_VERSION
+ARG NODE_ENVIRONMENT=min
 
 # base image
 FROM node:"$NODE_VERSION" AS builder
 
 #LABEL maintainer="glenn.ten.cate@owasp.org"
+RUN echo "NODE_VERSION:$NODE_VERSION NGINX_VERSION:$NGINX_VERSION"
+RUN echo "--configuration=$NODE_ENVIRONMENT"
 
 WORKDIR /home/user_angular/Angular2
 
@@ -18,7 +21,7 @@ RUN node -v
 
 # Optimize vendor.bundle.js
 RUN npm --loglevel=error install
-RUN npm run build --loglevel=error 
+RUN npm run build --configuration=$NODE_ENVIRONMENT --loglevel=error 
 
 ############
 ### run ###
@@ -50,7 +53,7 @@ RUN chown -R nginx:nginx /home/user_angular/ &&\
     chown -R nginx:nginx /usr/share/nginx/html &&\
     chown -R nginx:nginx /etc/nginx/conf.d/ &&\
     chown -R nginx:nginx /var/log/nginx &&\
-    chown -R nginx:nginx /var/cache/nginx &&\
+    #chown -R nginx:nginx /var/cache/nginx &&\
     # move the .pid file somewhere we can run
     sed -i -e "s_/var/run/nginx.pid_/etc/nginx/conf.d/nginx.pid_g" /etc/nginx/nginx.conf &&\
     chmod +x /home/user_angular/entrypoint.sh

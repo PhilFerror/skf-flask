@@ -33,23 +33,6 @@ services:
       - ./Docker/compose/proxy_config.pac:/usr/share/nginx/html/proxy_config.pac
     ports:
       - "80:80"
-  skf-angular:
-    container_name: skf-angular_container
-    build:
-      context: ./
-      dockerfile: ./Docker/alpine-cloud/angular/Dockerfile
-      args:
-        - NGINX_VERSION=${NGINX_VERSION}
-        - NODE_VERSION=${NODE_VERSION}
-    depends_on:
-      - "rabbitmq"
-      - "nginx"
-      - "mysql"
-    restart: always
-    image: "pei/skf-angular:${SKF_VERSION}"
-    environment:
-      - FRONTEND_URI=http://localhost
-      - AUTH_METHOD=skiploginprovider
   skf-api:
     container_name: skf-api_container
     build:
@@ -67,6 +50,30 @@ services:
       - ~/.kube/config:/home/user_api/.kube/config
     image: "pei/skf-api:${SKF_VERSION}"
     env_file: Docker/alpine-cloud/api/api.env
+    ports:
+      - "8888:8888"
+  skf-angular:
+    container_name: skf-angular_container
+    build:
+      context: ./
+      dockerfile: ./Docker/alpine-cloud/angular/Dockerfile
+      args:
+        - NGINX_VERSION=${NGINX_VERSION}
+        - NODE_VERSION=${NODE_VERSION}
+        - NODE_ENVIRONMENT=${NODE_ENVIRONMENT}
+    depends_on:
+      - "rabbitmq"
+      - "nginx"
+      - "mysql"
+      - "skf-api"
+    restart: always
+    image: "pei/skf-angular:${SKF_VERSION}"
+    #image: "blabla1337/skf-angular:4.1.0"
+    environment:
+      - FRONTEND_URI=http://localhost:8888
+      - AUTH_METHOD=skiploginprovider
+    ports:
+      - "8788:8788"
 
   zap:
     build:
